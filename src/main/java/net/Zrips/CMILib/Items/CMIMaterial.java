@@ -2756,6 +2756,10 @@ public enum CMIMaterial {
         return this.containsCriteria(CMIMC.COPPER);
     }
 
+    public boolean isChest() {
+        return this.containsCriteria(CMIMC.CHEST);
+    }
+
     public static boolean isWaxedCopper(Material mat) {
         CMIMaterial m = CMIMaterial.get(mat);
         return m == null ? false : m.isWaxedCopper();
