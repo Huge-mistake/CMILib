@@ -2756,6 +2756,11 @@ public enum CMIMaterial {
         return this.containsCriteria(CMIMC.COPPER);
     }
 
+    public static boolean isChest(Material mat) {
+        CMIMaterial m = CMIMaterial.get(mat);
+        return m == null ? false : m.isChest();
+    }
+
     public boolean isChest() {
         return this.containsCriteria(CMIMC.CHEST);
     }
