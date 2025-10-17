@@ -2492,7 +2492,7 @@ public enum CMIMaterial {
     }
 
     public boolean isChest() {
-        return isCopperChest() || this.containsCriteria(CMIMC.CHEST);
+        return this.containsCriteria(CMIMC.CHEST);
     }
 
     public static boolean isLeatherArmor(Material mat) {
