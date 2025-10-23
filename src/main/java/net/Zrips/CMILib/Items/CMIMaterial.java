@@ -821,7 +821,7 @@ public enum CMIMaterial {
     TERRACOTTA(172, "HARD_CLAY"),
     TIPPED_ARROW(440),
     TNT(46),
-    TNT_MINECART(407, "Minecart With TNT", "explosiveminecart"),
+    TNT_MINECART(407, "Minecart With TNT", "explosiveminecart", CMIMC.MINECART),
     TORCH(50, CMIMC.NOCOLLISIONBOX),
     TOTEM_OF_UNDYING(449, "Totem"),
     TRAPPED_CHEST(146, CMIMC.CHEST),
