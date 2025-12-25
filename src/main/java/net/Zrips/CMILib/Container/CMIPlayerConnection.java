@@ -1,5 +1,6 @@
 package net.Zrips.CMILib.Container;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,10 +16,32 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 
 import net.Zrips.CMILib.CMILib;
+import net.Zrips.CMILib.Version.Version;
 
 public class CMIPlayerConnection implements Listener {
 
     private static ConcurrentHashMap<UUID, Object> playersConnections = new ConcurrentHashMap<UUID, Object>();
+
+    private static Method sendPacket;
+
+    static {
+        try {
+            if (Version.isMojangMappings()) {
+                sendPacket = Class.forName("net.minecraft.server.network.ServerGamePacketListenerImpl").getMethod("send", Class.forName("net.minecraft.network.protocol.Packet"));
+            } else if (Version.isCurrentEqualOrHigher(Version.v1_20_R2)) {
+                sendPacket = Class.forName("net.minecraft.server.network.PlayerConnection").getMethod("b", Class.forName("net.minecraft.network.protocol.Packet"));
+            } else if (Version.isCurrentEqualOrHigher(Version.v1_18_R1)) {
+                sendPacket = Class.forName("net.minecraft.server.network.PlayerConnection").getMethod("a", Class.forName("net.minecraft.network.protocol.Packet"));
+            } else if (Version.isCurrentEqualOrHigher(Version.v1_17_R1)) {
+                sendPacket = Class.forName("net.minecraft.server.network.PlayerConnection").getMethod("sendPacket", Class.forName("net.minecraft.network.protocol.Packet"));
+            } else {
+                sendPacket = Class.forName("net.minecraft.server." + Version.getCurrent() + ".PlayerConnection").getMethod("sendPacket",
+                        Class.forName("net.minecraft.server." + Version.getCurrent() + ".Packet"));
+            }
+        } catch (NoSuchMethodException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void addConnection(Player player) {
         if (player == null)
@@ -84,6 +107,25 @@ public class CMIPlayerConnection implements Listener {
     public void onDisable(PluginDisableEvent event) {
         if (event.getPlugin().equals(CMILib.getInstance()))
             playersConnections.clear();
+    }
+
+    public static void sendPacket(Player player, Object packet) {
+        sendPacket(player.getUniqueId(), packet);
+    }
+
+    public static void sendPacket(UUID uuid, Object packet) {
+        Object connection = getConnection(uuid);
+        if (connection == null)
+            return;
+        sendPacket(connection, packet);
+    }
+
+    public static void sendPacket(Object connection, Object packet) {
+        try {
+            sendPacket.invoke(connection, packet);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
 }
