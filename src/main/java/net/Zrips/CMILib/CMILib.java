@@ -292,7 +292,9 @@ public class CMILib extends JavaPlugin {
         pm.registerEvents(new ChatEditorListener(this), this);
         pm.registerEvents(new BossBarListener(this), this);
         pm.registerEvents(new GUIListener(this), this);
-        pm.registerEvents(new GUIListener1_9(this), this);
+        if (Version.isCurrentEqualOrHigher(Version.v1_9_R1)) {
+            pm.registerEvents(new GUIListener1_9(this), this);
+        }
         pm.registerEvents(new RawMessageListener(), this);
         pm.registerEvents(new ShadowCommandListener(), this);
         pm.registerEvents(new WorldsListener(), this);
