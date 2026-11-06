@@ -2,6 +2,7 @@ package net.Zrips.CMILib.BossBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -15,6 +16,7 @@ import net.Zrips.CMILib.CMILib;
 import net.Zrips.CMILib.Colors.CMIChatColor;
 import net.Zrips.CMILib.Container.CMINumber;
 import net.Zrips.CMILib.Locale.Snd;
+import net.Zrips.CMILib.Logs.CMIDebug;
 import net.Zrips.CMILib.Time.CMITimeManager;
 import net.Zrips.CMILib.Version.Schedulers.CMITask;
 
@@ -41,6 +43,8 @@ public class BossBarInfo {
     private List<CMIChatColor> colors = null;
     private int colorChangeIntervalTicks = 20;
     private long nextColorChange = 0L;
+
+    boolean outdatedFormat = true;
 
     public BossBarInfo clone(Player player) {
         BossBarInfo barInfo = new BossBarInfo(player, nameOfBar);
@@ -235,6 +239,7 @@ public class BossBarInfo {
     }
 
     public void setColor(BarColor startingColor) {
+        outdatedFormat = !outdatedFormat ? !Objects.equals(this.startingColor, startingColor) : outdatedFormat;
         this.startingColor = startingColor;
     }
 
@@ -251,6 +256,7 @@ public class BossBarInfo {
     }
 
     public void setStyle(BarStyle style) {
+        outdatedFormat = !outdatedFormat ? !Objects.equals(this.style, style) : outdatedFormat;
         this.style = style;
     }
 
@@ -263,7 +269,7 @@ public class BossBarInfo {
     }
 
     public Integer getAuto() {
-        return CMINumber.clamp(auto == null ? 20 : auto, 1, 999);
+        return CMINumber.clamp(auto == null ? withPlaceholder ? 60 : getKeepFor() : auto, 1, 999);
     }
 
     public void setAuto(Integer auto) {

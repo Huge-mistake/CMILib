@@ -76,7 +76,7 @@ public class BossBarManager {
     }
 
     public synchronized void updateBossBars(Player player) {
-        if (Version.isCurrentLower(Version.v1_9_R1))
+        if (Version.isCurrentLower(Version.v1_9_0))
             return;
         if (player == null)
             return;
@@ -124,7 +124,7 @@ public class BossBarManager {
                 }
             }
         }
-        
+
         barInfo.setBar(Bukkit.createBossBar(name, color, barInfo.getStyle() != null ? barInfo.getStyle() : BarStyle.SEGMENTED_10));
     }
 
@@ -151,7 +151,7 @@ public class BossBarManager {
     }
 
     public synchronized void Show(final BossBarInfo barInfo) {
-        if (Version.isCurrentLower(Version.v1_9_R1))
+        if (Version.isCurrentLower(Version.v1_9_0))
             return;
 
         if (barInfo == null)
@@ -187,11 +187,17 @@ public class BossBarManager {
                 bar = barInfo.getBar();
             } else {
                 bar.setTitle(name);
-                if (barInfo.getStyle() != null)
-                    bar.setStyle(barInfo.getStyle());
-                if (barInfo.getColor() != null)
-                    bar.setColor(barInfo.getColor());
+
+                if (barInfo.outdatedFormat) {
+                    if (barInfo.getStyle() != null)
+                        bar.setStyle(barInfo.getStyle());
+                    if (barInfo.getColor() != null)
+                        bar.setColor(barInfo.getColor());
+                    barInfo.outdatedFormat = false;
+                }
+
                 bar.setVisible(true);
+
                 isNew = false;
             }
 
