@@ -23,6 +23,7 @@ import net.Zrips.CMILib.Items.CMIMaterial;
 import net.Zrips.CMILib.Items.CMIPotionEffectType;
 import net.Zrips.CMILib.Locale.LC;
 import net.Zrips.CMILib.Messages.CMIMessages;
+import net.Zrips.CMILib.RawMessages.RawMessage;
 import net.Zrips.CMILib.Version.Version;
 import net.Zrips.CMILib.commands.CAnnotation;
 import net.Zrips.CMILib.commands.CMICommand;
@@ -123,6 +124,11 @@ public class CMILibConfig {
                 "By default we are blocking PAPI %checkitem_...% placeholder to avoid potential serious issues with it",
                 "Only disable this if you have dedicated protection for it");
         ExploitPatcherCheckItem = cfg.get("ExploitPatcher.Placeholders.blocked.checkItem", true);
+
+        cfg.addComment("LinkRegex", "Responsible to automatically detect links inside text",
+                "Default: (?i)(?<![a-z0-9_&])(?:(?:https?|ftps?):\\/\\/[a-z0-9.-]+\\.[a-z]{2,}|[a-z0-9.-]+\\.[a-z]{2,3})(?::\\d+)?(?:\\/[^\\s]*)?(?=$|[\\s<>()])");
+        String ChatLinkRegex = cfg.get("LinkRegex", "(?i)(?<![a-z0-9_&])(?:(?:https?|ftps?):\\/\\/[a-z0-9.-]+\\.[a-z]{2,}|[a-z0-9.-]+\\.[a-z]{2,3})(?::\\d+)?(?:\\/[^\\s]*)?(?=$|[\\s<>()])");
+        RawMessage.updateLinkRegex(ChatLinkRegex);
 
         if (Version.isCurrentEqualOrHigher(Version.v1_16_0) && Version.isPaperBranch()) {
             cfg.addComment("LegacyRawMessage", "When enabled plugin will use legacy raw message system instead of new one",

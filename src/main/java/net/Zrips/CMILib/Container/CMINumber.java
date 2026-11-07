@@ -3,6 +3,7 @@ package net.Zrips.CMILib.Container;
 import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 public class CMINumber {
 
@@ -105,6 +106,7 @@ public class CMINumber {
             return min;
         if (value.compareTo(min) < 0)
             return min;
+
         return value;
     }
 
