@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import net.Zrips.CMILib.CMILibConfig;
 import net.Zrips.CMILib.Container.CMICommandSender;
 import net.Zrips.CMILib.Locale.LC;
+import net.Zrips.CMILib.Messages.CMIMessages;
 import net.Zrips.CMILib.Version.Version;
 
 public class RawMessage {
@@ -21,7 +22,17 @@ public class RawMessage {
     public static final String newLine = "\u00A5n";
     private static final Pattern QUOTED_NUMBER_WITH_D = Pattern.compile("(?<!text:)\"(-?\\d+(?:\\.\\d+)?)(?:[dD])?\"(?=[,\\}])");
 
-    static Pattern patern = Pattern.compile("(?<!&)((http|https|ftp|ftps)\\:\\/\\/)?[a-zA-Z0-9\\-]+\\.[a-zA-Z]{2,3}(\\/\\S*)?([^\\s|^\\)]+)");
+    static Pattern patern = Pattern.compile("(?i)(?<![a-z0-9_&])(?:(?:https?|ftps?):\\/\\/[a-z0-9.-]+\\.[a-z]{2,}|[a-z0-9.-]+\\.[a-z]{2,3})(?::\\d+)?(?:\\/[^\\s]*)?(?=$|[\\s<>()])");
+    
+    public static void updateLinkRegex(String   regex) {
+        if (regex == null || regex.isEmpty())
+            return;
+        try {
+            patern = Pattern.compile(regex);
+        } catch (Exception e) {
+            CMIMessages.consoleMessage("Failed to compile new link regex: " + regex);
+        }
+    }
 
     public static String fixQuotedAmountNumbers(String input) {
         if (!input.contains("d\",") && !input.contains("d\"}"))

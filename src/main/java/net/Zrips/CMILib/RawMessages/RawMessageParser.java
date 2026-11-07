@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -162,25 +164,37 @@ public class RawMessageParser {
         String text = RawMessage.extractTag(message, "T");
 
         Matcher match = RawMessage.patern.matcher(text);
+
         if (match.find()) {
             String url = match.group();
 
-            String[] sp = text.split(url);
-            if (sp.length > 0) {
-                if (sp[0].endsWith("&")) {
-                    rm.addText(CMIChatColor.translate(sp[0]) + url.substring(0, 1));
-                    url = url.substring(1);
-                } else {
-                    String t = CMIChatColor.translate(sp[0]);
-                    if (!t.equals(url))
-                        rm.addText(t);
-                }
-            }
+            String potentialName = url.substring(url.lastIndexOf('.') + 1);
 
-            rm.addText(url);
-            rm.addUrl(url);
-            if (sp.length > 1) {
-                rm.addText(sp[1]);
+            Player player = potentialName.isEmpty() ? null : Bukkit.getPlayerExact("." + potentialName);
+
+            // Bedrock users have a dot in their name, so we need to check if the player is
+            // online first before we assume it's a url
+            if (player != null) {
+                rm.addText(text);
+            } else {
+
+                String[] sp = text.split(url);
+                if (sp.length > 0) {
+                    if (sp[0].endsWith("&")) {
+                        rm.addText(CMIChatColor.translate(sp[0]) + url.substring(0, 1));
+                        url = url.substring(1);
+                    } else {
+                        String t = CMIChatColor.translate(sp[0]);
+                        if (!t.equals(url))
+                            rm.addText(t);
+                    }
+                }
+
+                rm.addText(url);
+                rm.addUrl(url);
+                if (sp.length > 1) {
+                    rm.addText(sp[1]);
+                }
             }
         } else {
             rm.addText(text);
