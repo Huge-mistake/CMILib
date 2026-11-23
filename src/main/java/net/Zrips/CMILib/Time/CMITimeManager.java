@@ -280,10 +280,15 @@ public class CMITimeManager {
         return (tInfo);
     }
 
-    public static long toMinecraftTime(String time) {
+    public static Long toMinecraftTime(String time) {
         time = time.toUpperCase().trim();
         boolean pm = time.endsWith("PM");
-        int hour = Integer.parseInt(time.replaceAll("[^0-9]", ""));
+        int hour = 0;
+        try {
+            hour = Integer.parseInt(time.replaceAll("[^0-9]", ""));
+        } catch (NumberFormatException e) {
+            return 0L;
+        }
         hour = hour % 12 + (pm ? 12 : 0);
         return (hour * 1000L - 6000L + 24000L) % 24000L;
     }
@@ -296,9 +301,10 @@ public class CMITimeManager {
         List<String> splited = new ArrayList<String>();
 
         int additional = 0;
-        if (time.contains("pm") || time.contains("am")) {
-            long ticks = toMinecraftTime(time);
-            tInfo.setTicks((int) ticks);
+        if (time.endsWith("pm") || time.endsWith("am")) {
+            Long ticks = toMinecraftTime(time);
+            if (ticks != null && ticks >= 0 && ticks <= 24000)
+                tInfo.setTicks(ticks.intValue());
             return tInfo;
         } else if (time.contains("ticks") || !time.contains(":")) {
             time = time.replace("ticks", "");
@@ -306,7 +312,7 @@ public class CMITimeManager {
             try {
                 ticks = Long.parseLong(time);
             } catch (NumberFormatException e) {
-                return tInfo;
+                return tInfo; 
             }
             if (ticks < 0)
                 return tInfo;
