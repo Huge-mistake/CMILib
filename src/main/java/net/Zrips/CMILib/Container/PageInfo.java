@@ -190,7 +190,7 @@ public class PageInfo {
         }
 
         RawMessage rm = new RawMessage();
-        RawMessageCommand rmcb = new RawMessageCommand() {
+        RawMessageCommand rmcb = new RawMessageCommand(((Player) sender).getUniqueId()) {
             @Override
             public void run(CommandSender sender) {
                 if (pageChange(prevpage) != null)
@@ -212,7 +212,7 @@ public class PageInfo {
 
         rm.addText(LC.info_pageCount.getLocale("[current]", getCurrentPage(), "[total]", getTotalPages())).addHover(LC.info_pageCountHover.getLocale("[totalEntries]", getTotalEntries()));
 
-        RawMessageCommand rmcf = new RawMessageCommand() {
+        RawMessageCommand rmcf = new RawMessageCommand(((Player) sender).getUniqueId()) {
             @Override
             public void run(CommandSender sender) {
                 if (pageChange(nextPage) != null)
